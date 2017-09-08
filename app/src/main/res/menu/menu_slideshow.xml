@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.dadda.mapphotobook.slideshow">
+    <item
+        android:id="@+id/delete_photo"
+        android:orderInCategory="100"
+        android:title="@string/delete_photo"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_all"
+        android:orderInCategory="101"
+        android:title="@string/delete_all"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_point"
+        android:orderInCategory="102"
+        android:title="@string/delete_point"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "269663407948",
+    "firebase_url": "https://mapphotobook-d115d.firebaseio.com",
+    "project_id": "mapphotobook-d115d",
+    "storage_bucket": "mapphotobook-d115d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269663407948:android:b375e19356e19aec",
+        "android_client_info": {
+          "package_name": "com.hopelesscoder.mapphotobook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269663407948-qtb6gmove8i91j19hfl836c9v2mdutaa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hopelesscoder.mapphotobook",
+            "certificate_hash": "0aa6b66f061e986c0b5d318d326b91b1241f2cb7"
+          }
+        },
+        {
+          "client_id": "269663407948-n08qqv3b191sr5753l1nnb80044j3ea9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY0lqvx2gvl8sstBrxP_j3GudZUublFJk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269663407948-n08qqv3b191sr5753l1nnb80044j3ea9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

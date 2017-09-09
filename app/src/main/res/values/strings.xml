@@ -12,4 +12,6 @@
     <string name="delete_all">Delete all</string>
     <string name="delete_point">Delete point</string>
     <string name="plus">+</string>
+    <string name="banner_ad_unit_id_prova">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6010001093429697/5867338076</string>
 </resources>

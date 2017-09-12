@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.hopelesscoder.mapphotobook.R;
 import com.github.chrisbanes.photoview.PhotoView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,30 +122,48 @@ public class Slideshow extends AppCompatActivity implements View.OnClickListener
         }
         crs.close();
         */
-        Cursor crs = db1.rawQuery("SELECT DISTINCT uri, lat, lng FROM Photobook WHERE lat LIKE ? AND lng LIKE ?",
+        Cursor crs = db1.rawQuery("SELECT DISTINCT _id, uri, lat, lng FROM Photobook WHERE lat LIKE ? AND lng LIKE ?",
                 new String[]{String.valueOf(lat).substring(0,String.valueOf(lat).length()-5).concat("%"),
                         String.valueOf(lng).substring(0,String.valueOf(lng).length()-5).concat("%")});
         while (crs.moveToNext()) {
             if (crs != null && crs.getCount() > 0 && crs.getString(crs.getColumnIndex(DatabaseStrings.FIELD_URI)) != null) {
                 Uri uri = Uri.parse(crs.getString(crs.getColumnIndex(DatabaseStrings.FIELD_URI)));
-                int index;
-                if (myList.size() > 0) {
-                    index = myList.size();
-                } else {
-                    index = 0;
-                }
-                myList.add(index, uri);
-                imageNow = uri;
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    // Log.d(TAG, String.valueOf(bitmap));
 
-                    PhotoView photoView = (PhotoView) findViewById(R.id.photoView);
-                    photoView.setImageBitmap(bitmap);
-                    //salva();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                /*File imgFile = new File(uri.getPath());
+                if (!imgFile.exists()) {
+                    // file doesn't exists
+                    Toast.makeText(this,"File doesn't exist  "+ uri,Toast.LENGTH_LONG).show();
+
+                }else {*/
+                    try {
+                        //Toast.makeText(this,"File exists",Toast.LENGTH_SHORT).show();
+                        // file exists
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        // Log.d(TAG, String.valueOf(bitmap));
+
+                        PhotoView photoView = (PhotoView) findViewById(R.id.photoView);
+                        photoView.setImageBitmap(bitmap);
+                        //salva();
+
+                        int index;
+                        if (myList.size() > 0) {
+                            index = myList.size();
+                        } else {
+                            index = 0;
+                        }
+                        myList.add(index, uri);
+                        imageNow = uri;
+
+
+                    } catch (IOException | java.lang.SecurityException e) {
+                        //e.printStackTrace();
+                        //Toast.makeText(this,"Exception:file doesn't exist",Toast.LENGTH_SHORT).show();
+
+                        int id = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ID));
+                        db.delete(id);
+                    }
+                //}
             }
         }
         crs.close();

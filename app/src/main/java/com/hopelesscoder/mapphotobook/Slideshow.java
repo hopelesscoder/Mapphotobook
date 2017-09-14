@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +24,11 @@ import com.hopelesscoder.mapphotobook.R;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,6 +265,15 @@ public class Slideshow extends AppCompatActivity implements View.OnClickListener
                 }
                 crs.close();
 
+
+                Intent intent = new Intent(this, Slideshow.class);
+                intent.putExtra("lat", lat);
+                intent.putExtra("lng", lng);
+                intent.putExtra("testo", testo);
+                this.finish();
+                startActivity(intent);
+
+                /*
                 if(myList.indexOf(imageNow)>=1){
                     Uri temp = myList.get(myList.indexOf(imageNow)-1);
                     Bitmap bitmap = null;
@@ -273,10 +288,32 @@ public class Slideshow extends AppCompatActivity implements View.OnClickListener
                     if (myList.indexOf(imageNow)==0){
                         previous.setClickable(false);
                     }
+                    if (myList.indexOf(imageNow)==myList.size()-1){
+                        next.setClickable(false);
+                    }
+                }else if(myList.indexOf(imageNow)<myList.size()-1){
+                    Uri temp = myList.get(myList.indexOf(imageNow)+1);
+                    Bitmap bitmap = null;
+                    myList.set(myList.indexOf(imageNow),null);
+                    imageNow = temp;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), temp);
+                        image.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (myList.indexOf(imageNow)==0){
+                        previous.setClickable(false);
+                    }
+                    if (myList.indexOf(imageNow)==myList.size()-1){
+                        next.setClickable(false);
+                    }
                 }else {
                     image.setImageBitmap(null);
+                    previous.setClickable(false);
+                    next.setClickable(false);
                 }
-
+                */
 
                 return true;
             case R.id.delete_all:
@@ -317,6 +354,58 @@ public class Slideshow extends AppCompatActivity implements View.OnClickListener
                 startActivity(i);
 
                 return true;
+
+            /*case R.id.backup:
+                //final String inFileName = "/data/data/<your.app.package>/databases/foo.db";
+                final String inFileName = getDatabasePath(DBhelper.DBNAME).getPath();
+                File dbFile = new File(inFileName);
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(dbFile);
+
+                    String directory = Environment.getExternalStorageDirectory()+"/mapphotobook";
+                    File myDir = new File(directory);
+                    if (!myDir.exists() && !myDir.isDirectory()){
+                        if (myDir.mkdirs()){
+                            Toast.makeText(this,"dir created",Toast.LENGTH_LONG).show();
+                            myDir.setReadable(true, false);
+                            myDir.setWritable(true, false);
+                            MediaScannerConnection.scanFile(this, new String[] {myDir.toString()}, null, null);
+                        }else{
+                            Toast.makeText(this,"unable to create dir",Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        Toast.makeText(this,"dir already exists",Toast.LENGTH_LONG).show();
+                    }
+
+
+                    //String outFileName = Environment.getExternalStorageDirectory()+"/"+DBhelper.DBNAME+"_copy";
+                    String outFileName = directory+"/"+DBhelper.DBNAME+"_copy";
+                    MediaScannerConnection.scanFile(this, new String[] {outFileName}, null, null);
+
+                    // Open the empty db as the output stream
+                    OutputStream output = new FileOutputStream(outFileName);
+
+                    // Transfer bytes from the inputfile to the outputfile
+                    byte[] buffer = new byte[1024];
+                    int length;
+
+
+                    while ((length = fis.read(buffer))>0){
+                        output.write(buffer, 0, length);
+                    }
+
+                    // Close the streams
+                    output.flush();
+                    output.close();
+                    fis.close();
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
 
             default:
                 return super.onOptionsItemSelected(item);

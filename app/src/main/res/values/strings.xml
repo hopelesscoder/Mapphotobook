@@ -14,4 +14,7 @@
     <string name="plus">+</string>
     <string name="banner_ad_unit_id_prova">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_ad_unit_id">ca-app-pub-6010001093429697/5867338076</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
+    <string name="delete_database">Delete database</string>
 </resources>

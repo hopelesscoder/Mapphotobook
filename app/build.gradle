@@ -7,7 +7,7 @@ android {
         applicationId "com.hopelesscoder.mapphotobook"
         minSdkVersion 19
         targetSdkVersion 26
-        versionName '0.1.1'
+        versionName '0.1.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         versionCode 1
     }

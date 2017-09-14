@@ -2,16 +2,27 @@ package com.hopelesscoder.mapphotobook;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaScannerConnection;
+import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -26,11 +37,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowClickListener, View.OnClickListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnInfoWindowClickListener, View.OnClickListener {
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 13;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 14;
+    private static final int MY_PERMISSIONS_RESTORE = 15;
+    private static final int MY_PERMISSIONS_DELETE_DATABASE = 16;
+    private int PICK_DB_REQUEST = 2;
     private GoogleMap mMap;
     private DbManager db = null;
     private DBhelper dbhelper;
@@ -38,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Dialog d;
     Button bOk;
     EditText dialogEditText;
+    MenuItem backup;
 
     LatLng now;
 
@@ -52,6 +74,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMap);
+        //toolbar.setTitle("Map photo book");
+        //this.setSupportActionBar(toolbar);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -277,6 +303,303 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 return;
             }
+
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    onOptionsItemSelected(backup);
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            case MY_PERMISSIONS_RESTORE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+
+                    Intent intent = new Intent();
+                    // Show only images, no videos or anything else
+                    intent.setType("*/*");
+                    //intent.setAction(Intent.ACTION_GET_CONTENT);
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    // Always show the chooser (if there are multiple options available)
+                    startActivityForResult(Intent.createChooser(intent, "Select db file"), PICK_DB_REQUEST);
+
+
+                }else{
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                break;
+            }
+
+        }
+    }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_map, menu);
+        backup = (MenuItem) menu.findItem(R.id.backup);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle item selection
+        switch (item.getItemId()) {
+
+            case R.id.backup:
+                //final String inFileName = "/data/data/<your.app.package>/databases/foo.db";
+                final String inFileName = getDatabasePath(DBhelper.DBNAME).getPath();
+                File dbFile = new File(inFileName);
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(dbFile);
+
+                    String directory = Environment.getExternalStorageDirectory()+"/mapphotobook";
+                    File myDir = new File(directory);
+
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                            // Show an explanation to the user *asynchronously* -- don't block
+                            // this thread waiting for the user's response! After the user
+                            // sees the explanation, try again to request the permission.
+
+
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+
+                            //Toast.makeText(this, "Permission is needed to get your position", Toast.LENGTH_LONG).show();
+
+
+                        } else {
+
+                            // No explanation needed, we can request the permission.
+
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                        }
+
+                    }else if (!myDir.exists() && !myDir.isDirectory()){
+                        if (myDir.mkdirs()){
+                            //Toast.makeText(this,"dir created",Toast.LENGTH_LONG).show();
+                            myDir.setReadable(true, false);
+                            myDir.setWritable(true, false);
+                            MediaScannerConnection.scanFile(this, new String[] {myDir.toString()}, null, null);
+
+
+                            //String outFileName = Environment.getExternalStorageDirectory()+"/"+DBhelper.DBNAME+"_copy";
+                            String outFileName = directory+"/"+DBhelper.DBNAME+"_copy";
+                            MediaScannerConnection.scanFile(this, new String[] {outFileName}, null, null);
+
+                            // Open the empty db as the output stream
+                            OutputStream output = new FileOutputStream(outFileName);
+
+                            // Transfer bytes from the inputfile to the outputfile
+                            byte[] buffer = new byte[1024];
+                            int length;
+
+
+                            while ((length = fis.read(buffer))>0){
+                                output.write(buffer, 0, length);
+                            }
+
+                            // Close the streams
+                            output.flush();
+                            output.close();
+                            fis.close();
+                        }else{
+                            Toast.makeText(this,"unable to create dir, permission needed",Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        //Toast.makeText(this,"dir already exists",Toast.LENGTH_LONG).show();
+
+
+                        //String outFileName = Environment.getExternalStorageDirectory()+"/"+DBhelper.DBNAME+"_copy";
+                        String outFileName = directory+"/"+DBhelper.DBNAME+"_copy";
+                        MediaScannerConnection.scanFile(this, new String[] {outFileName}, null, null);
+
+                        // Open the empty db as the output stream
+                        OutputStream output = new FileOutputStream(outFileName);
+
+                        // Transfer bytes from the inputfile to the outputfile
+                        byte[] buffer = new byte[1024];
+                        int length;
+
+
+                        while ((length = fis.read(buffer))>0){
+                            output.write(buffer, 0, length);
+                        }
+
+                        // Close the streams
+                        output.flush();
+                        output.close();
+                        fis.close();
+                    }
+                    //Toast.makeText(this,myDir.toString(),Toast.LENGTH_LONG).show();
+
+
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+
+            case R.id.restore:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+
+
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_RESTORE);
+
+                        //Toast.makeText(this, "Permission is needed to get your position", Toast.LENGTH_LONG).show();
+
+
+                    } else {
+
+                        // No explanation needed, we can request the permission.
+
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_RESTORE);
+                    }
+
+                }else {
+
+                    Intent intent = new Intent();
+                    // Show only images, no videos or anything else
+                    intent.setType("*/*");
+                    //intent.setAction(Intent.ACTION_GET_CONTENT);
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    // Always show the chooser (if there are multiple options available)
+                    startActivityForResult(Intent.createChooser(intent, "Select db file"), PICK_DB_REQUEST);
+                }
+                return true;
+
+            case R.id.delete_database:
+
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(this);
+                }
+                builder.setTitle("Delete database")
+                        .setMessage("Are you sure you want to compeltely delete the database of all the positions?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String inFileName = getDatabasePath(DBhelper.DBNAME).getPath();
+                                File dbFile = new File(inFileName);
+                                if (dbFile.delete()){
+                                    Toast.makeText(getApplicationContext(),"db deleted",Toast.LENGTH_LONG).show();
+                                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+                                    finish();
+                                    startActivity(i);
+                                }else {
+                                    Toast.makeText(getApplicationContext(),"Something goes wrong,db isn't deleted",Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_DB_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+
+            try {
+                getContentResolver().takePersistableUriPermission(data.getData(),Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                //final String inFileName = data.getData().getPath();
+                //File dbFile = new File(inFileName);
+                FileInputStream fis = (FileInputStream) getContentResolver().openInputStream(data.getData());
+                //fis = new FileInputStream(dbFile);
+
+                String outFileName = getDatabasePath(DBhelper.DBNAME).getPath();
+                File delDb = new File(outFileName);
+                delDb.delete();
+
+                // Open the empty db as the output stream
+                OutputStream output = new FileOutputStream(outFileName);
+
+                // Transfer bytes from the inputfile to the outputfile
+                byte[] buffer = new byte[1024];
+                int length;
+
+
+                while ((length = fis.read(buffer))>0){
+                    output.write(buffer, 0, length);
+                }
+
+                // Close the streams
+                output.flush();
+                output.close();
+                fis.close();
+
+                Intent i = new Intent(this, MapsActivity.class);
+                finish();
+                startActivity(i);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
         }
     }

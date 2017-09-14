@@ -1,20 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.hopelesscoder.mapphotobook.slideshow">
+    android:id="@+id/menu_map" >
     <item
-        android:id="@+id/delete_photo"
+        android:id="@+id/backup"
         android:orderInCategory="100"
-        android:title="@string/delete_photo"
+        android:title="@string/backup"
         app:showAsAction="never" />
     <item
-        android:id="@+id/delete_all"
+        android:id="@+id/restore"
         android:orderInCategory="101"
-        android:title="@string/delete_all"
+        android:title="@string/restore"
         app:showAsAction="never" />
     <item
-        android:id="@+id/delete_point"
+        android:id="@+id/delete_database"
         android:orderInCategory="102"
-        android:title="@string/delete_point"
+        android:title="@string/delete_database"
         app:showAsAction="never" />
 </menu>

@@ -20,7 +20,6 @@ To do backup/restore you need to go in the homepage and click on the menu in the
   <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164047.png" alt="" width="40%" height="40%"/>
   <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-161555.png" alt="" width="40%" height="40%"/>
   <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164006.png" alt="" width="40%" height="40%"/>
-  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-161555.png" alt="" width="40%" height="40%"/>
   <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164407.png" alt="" width="40%" height="40%"/>
   <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164425.png" alt="" width="40%" height="40%"/>
   <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164448.png" alt="" width="40%" height="40%"/>

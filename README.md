@@ -28,5 +28,5 @@ To do backup/restore you need to go in the homepage and click on the menu in the
 <\div>
 
 ## Info & contacts
-Linkedin: https://www.linkedin.com/in/daniele-pasquini-2b5b4466/
+Linkedin: https://www.linkedin.com/in/daniele-pasquini-2b5b4466/ <br>
 Play store: https://play.google.com/store/apps/details?id=com.hopelesscoder.mapphotobook

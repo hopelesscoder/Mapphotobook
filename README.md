@@ -16,7 +16,17 @@ It is available the function to backup locally and restore the database of your 
 To do backup/restore you need to go in the homepage and click on the menu in the top right corner and choose backup or restore. If you choose restore you need to find the backup file named by the app MAPPHOTOBOOK_copy (you can rename it).
 
 ## Screenshots
-
+<div>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164047.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-161555.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164006.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-161555.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164407.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164425.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164448.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-164700.png" alt="" width="40%" height="40%"/>
+  <img src="https://github.com/hopelesscoder/Mapphotobook/blob/master/Screenshots/device-2017-09-08-1647001.png" alt="" width="40%" height="40%"/>
+<\div>
 
 ## Info & contacts
 Linkedin: https://www.linkedin.com/in/daniele-pasquini-2b5b4466/
